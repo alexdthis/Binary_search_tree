@@ -77,71 +77,71 @@ class Tree
         elsif node.root < value
             self.delete(value, node.right_tree)
         elsif node.root == value
-
+            
         end
     end
 
-    def preorder(node = @tree, &block)
+    def preorder(node = @tree, output = [], &block)
         if node == nil
             return nil
         end
         if block_given?
             if block.call(node.root)
-                print "#{node.root} "
-                self.preorder(node.left_tree, &block)
-                self.preorder(node.right_tree, &block)
+                output.push(node.root)
+                self.preorder(node.left_tree, output, &block)
+                self.preorder(node.right_tree, output, &block)
             else
-                self.preorder(node.left_tree, &block)
-                self.preorder(node.right_tree, &block)
+                self.preorder(node.left_tree, output, &block)
+                self.preorder(node.right_tree, output, &block)
             end
         else
-            print "#{node.root} "
-            self.preorder(node.left_tree)
-            self.preorder(node.right_tree)
+            output.push(node.root)
+            self.preorder(node.left_tree, output, &block)
+            self.preorder(node.right_tree, output, &block)
         end
-        #return output.join('-')
+        return output
     end
     
-    def inorder(node = @tree, &block)
+    def inorder(node = @tree, output = [], &block)
         if node == nil
             return nil
         end
         if block_given?
             if block.call(node.root)
-                self.preorder(node.left_tree, &block)
-                print "#{node.root} "
-                self.preorder(node.right_tree, &block)
+                self.preorder(node.left_tree, output, &block)
+                output.push(node.root)
+                self.preorder(node.right_tree, output, &block)
             else
-                self.preorder(node.left_tree, &block)
-                self.preorder(node.right_tree, &block)
+                self.preorder(node.left_tree, output, &block)
+                self.preorder(node.right_tree, output, &block)
             end
         else
-            self.preorder(node.left_tree)
-            print "#{node.root} "
-            self.preorder(node.right_tree)
+            self.preorder(node.left_tree, output, &block)
+            output.push(node.root)
+            self.preorder(node.right_tree, output, &block)
         end
-        #return output.join('-')
+        return output
     end
     
-    def postorder(node = @tree, &block)
+    def postorder(node = @tree, output = [], &block)
         if node == nil
             return nil
         end
         if block_given?
             if block.call(node.root)
-                self.preorder(node.left_tree, &block)
-                self.preorder(node.right_tree, &block)
-                print "#{node.root} "
+                self.preorder(node.left_tree, output, &block)
+                self.preorder(node.right_tree, output, &block)
+                output.push(node.root)
             else
-                self.preorder(node.left_tree, &block)
-                self.preorder(node.right_tree, &block)
+                self.preorder(node.left_tree, output, &block)
+                self.preorder(node.right_tree, output, &block)
             end
         else
-            self.preorder(node.left_tree)
-            self.preorder(node.right_tree)
-            print "#{node.root} "
+            self.preorder(node.left_tree, output, &block)
+            self.preorder(node.right_tree, output, &block)
+            output.push(node.root)
         end
-        #return output.join('-')
+        return output
     end
 end
 
@@ -163,7 +163,8 @@ test_tree = Tree.new(test_array)
 puts test_tree
 puts test_tree.class
 #test_block = Proc.new {|value| value > 4}
-puts test_tree.preorder {|value| value == 4}
+output = test_tree.preorder {|value| value > 3}
+puts output.join(' ')
 #test_tree.insert(9)
 #puts ""
 #test_tree.preorder
