@@ -54,16 +54,95 @@ class Tree
         return node
     end
 
-    def preorder(node)
-        if node == nil
-            return nil
+    def insert(value, node = @tree)
+        if node.left_tree == nil && node.right_tree == nil
+            if node.root > value
+                node.left_tree = Node.new(value)
+                return nil
+            else
+                node.right_tree = Node.new(value)
+                return nil
+            end
+        end
+        if node.root > value
+            self.insert(value, node.left_tree)
         else
-            print node.root
-            print self.preorder(node.left_tree)
-            print self.preorder(node.right_tree)
+            self.insert(value, node.right_tree)
         end
     end
+
+    def delete(value, node = @tree)
+        if node.root > value
+            self.delete(value, node.left_tree)
+        elsif node.root < value
+            self.delete(value, node.right_tree)
+        elsif node.root == value
+
+        end
+    end
+
+    def preorder(node = @tree, &block)
+        if node == nil
+            return nil
+        end
+        if block_given?
+            if block.call(node.root)
+                print "#{node.root} "
+                self.preorder(node.left_tree, &block)
+                self.preorder(node.right_tree, &block)
+            else
+                self.preorder(node.left_tree, &block)
+                self.preorder(node.right_tree, &block)
+            end
+        else
+            print "#{node.root} "
+            self.preorder(node.left_tree)
+            self.preorder(node.right_tree)
+        end
+        #return output.join('-')
+    end
     
+    def inorder(node = @tree, &block)
+        if node == nil
+            return nil
+        end
+        if block_given?
+            if block.call(node.root)
+                self.preorder(node.left_tree, &block)
+                print "#{node.root} "
+                self.preorder(node.right_tree, &block)
+            else
+                self.preorder(node.left_tree, &block)
+                self.preorder(node.right_tree, &block)
+            end
+        else
+            self.preorder(node.left_tree)
+            print "#{node.root} "
+            self.preorder(node.right_tree)
+        end
+        #return output.join('-')
+    end
+    
+    def postorder(node = @tree, &block)
+        if node == nil
+            return nil
+        end
+        if block_given?
+            if block.call(node.root)
+                self.preorder(node.left_tree, &block)
+                self.preorder(node.right_tree, &block)
+                print "#{node.root} "
+            else
+                self.preorder(node.left_tree, &block)
+                self.preorder(node.right_tree, &block)
+            end
+        else
+            self.preorder(node.left_tree)
+            self.preorder(node.right_tree)
+            print "#{node.root} "
+        end
+        #return output.join('-')
+    end
 end
 
 class Node
@@ -79,8 +158,12 @@ end
 
 
 
-test_array = [1,2, 3, 4, 5, 6, 7, 8]
+test_array = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 test_tree = Tree.new(test_array)
 puts test_tree
 puts test_tree.class
-test_tree.preorder(test_tree.tree)
+#test_block = Proc.new {|value| value > 4}
+puts test_tree.preorder {|value| value == 4}
+#test_tree.insert(9)
+#puts ""
+#test_tree.preorder
