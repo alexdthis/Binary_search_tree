@@ -6,6 +6,8 @@ The lib file will consist of a Node class and a tree class.
 The tree class will store an array that contains a root value 
 along with two Node objects for the left and right subtree.
 
+The Node class will contain the left and right subtrees.
+
 The Tree class will have the following methods:
 
 	1. build_tree - it takes an array of data, sorts it, and turns it into a binary search tree. It will assign a root value which is the midpoint of the sorted array then recursively divide up the array, assigning them into either the left or right subtrees until it is completely constructed. After it has been constructed, the method should then return the
