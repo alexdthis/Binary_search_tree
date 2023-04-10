@@ -71,13 +71,46 @@ class Tree
         end
     end
 
-    def delete(value, node = @tree)
-        if node.root > value
-            self.delete(value, node.left_tree)
-        elsif node.root < value
-            self.delete(value, node.right_tree)
-        elsif node.root == value
-            
+#Traverses the tree and searches for the value
+#when the value is found, executes an inorder traversal in order to found the inorder successor of the node
+#then replaces it, afterwards, sets the deleted flag to true    
+    def delete(value, deleted = false, node = @tree)
+        if deleted && node != nil
+            if node == nil
+                return
+            elsif node.root > value
+                if node.left_tree.root == value
+                    node.left_tree = nil
+                else
+                    self.delete(value, deleted, node.left_tree)
+                end
+            elsif node.root < value
+                if node.right_tree.root == value
+                    node.right_tree = nil
+                else
+                    self.delete(value, deleted, node.right_tree)
+                end
+            end
+        elsif deleted == false 
+            if node.root > value
+                self.delete(value, deleted, node.left_tree)
+            elsif node.root < value
+                self.delete(value, deleted, node.right_tree)
+            elsif node.root == value
+                if node.left_tree == nil && node.right_tree != nil
+                    node.root = node.right_tree
+                    node.right_tree = nil
+                elsif node.left_tree != nil && node.right_tree == nil
+                    node.root = node.left_tree
+                    node.left_tree = nil
+                elsif node.left_tree == nil && node.right_tree == nil
+                    return
+                elsif node.left_tree != nil && node.right_tree != nil
+                    replacement_value = self.inorder(node.right_tree).min
+                    self.delete(replacement_value, true)
+                    node.root = replacement_value
+                end
+            end
         end
     end
 
@@ -108,17 +141,17 @@ class Tree
         end
         if block_given?
             if block.call(node.root)
-                self.preorder(node.left_tree, output, &block)
+                self.inorder(node.left_tree, output, &block)
                 output.push(node.root)
-                self.preorder(node.right_tree, output, &block)
+                self.inorder(node.right_tree, output, &block)
             else
-                self.preorder(node.left_tree, output, &block)
-                self.preorder(node.right_tree, output, &block)
+                self.inorder(node.left_tree, output, &block)
+                self.inorder(node.right_tree, output, &block)
             end
         else
-            self.preorder(node.left_tree, output, &block)
+            self.inorder(node.left_tree, output, &block)
             output.push(node.root)
-            self.preorder(node.right_tree, output, &block)
+            self.inorder(node.right_tree, output, &block)
         end
         return output
     end
@@ -129,16 +162,16 @@ class Tree
         end
         if block_given?
             if block.call(node.root)
-                self.preorder(node.left_tree, output, &block)
-                self.preorder(node.right_tree, output, &block)
+                self.postorder(node.left_tree, output, &block)
+                self.postorder(node.right_tree, output, &block)
                 output.push(node.root)
             else
-                self.preorder(node.left_tree, output, &block)
-                self.preorder(node.right_tree, output, &block)
+                self.postorder(node.left_tree, output, &block)
+                self.postorder(node.right_tree, output, &block)
             end
         else
-            self.preorder(node.left_tree, output, &block)
-            self.preorder(node.right_tree, output, &block)
+            self.postorder(node.left_tree, output, &block)
+            self.postorder(node.right_tree, output, &block)
             output.push(node.root)
         end
         return output
@@ -158,13 +191,15 @@ end
 
 
 
-test_array = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+test_array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 test_tree = Tree.new(test_array)
 puts test_tree
-puts test_tree.class
 #test_block = Proc.new {|value| value > 4}
-output = test_tree.preorder {|value| value > 3}
-puts output.join(' ')
+puts test_tree.inorder.join(' ')
+test_tree.delete(5)
+print test_tree.inorder
+print test_tree.preorder
+
 #test_tree.insert(9)
 #puts ""
 #test_tree.preorder
