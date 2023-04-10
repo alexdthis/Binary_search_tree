@@ -5,37 +5,6 @@
 #The tree class will store an array that contains a root value 
 #along with two Node objects for the left and right subtree.
 
-#The Tree class will have the following methods:
-
-#1. build_tree - it takes an array of data, sorts it, and turns it into a binary search tree.
-#It will assign a root value which is the midpoint of the sorted array then recursively 
-#divide up the array, assigning them into either the left or right subtrees until it is 
-#completely constructed. After it has been constructed, the method should then return the
-#level 0 root node
-	
-#2. insert and delete - the method should traverse the tree and add or remove the
-#node with the specified value at the appropriate place. The insert and delete methods should
-#not be modifying the original input array and re-drawing it.
-
-#3. find - traverses the tree and returns the node that has the specified value
-	
-#4. level_order - accepts a block, traverses the tree in breadth-first level order, and yield 
-#each read node to the block. If no block is given, returns an array of values.
-	
-#5. inorder (Left, node, right), preorder (node, left, right), and postorder (left, right, node)- 
-#each will accept a block, traverse the tree in the corresponding depth first level order, yields  
-#the node to thje given block. If no block is given, outputs the value in the corresponding order.
-	
-#6. height - accepts a node and returns distance from node to leaf node
-	
-#7. depth - accepts a node and returns distance from node to root node
-	
-#8. balanced? - determines if difference of height of left and right subtrees are at most 1. If 
-#not, it is not balanced.
-	
-#9. rebalance - produces an array by traversing an unbalanced tree, then outputs it to the build-tree 
-#method to make a new balanced binary search tree.
-
 class Tree
 
     attr_reader :tree
@@ -45,6 +14,8 @@ class Tree
         @tree = build_tree(@array)
     end
 
+#builds the actual balanced binary search tree
+
     def build_tree(array)
         return nil if array.empty?
         middle = array.length / 2
@@ -53,6 +24,8 @@ class Tree
         node.right_tree = build_tree(array[middle + 1, array.length])
         return node
     end
+
+#creates a node with the specified value as the root node, then traverses the tree, and adds the node as a leaf node
 
     def insert(value, node = @tree)
         if node.left_tree == nil && node.right_tree == nil
@@ -74,6 +47,7 @@ class Tree
 #Traverses the tree and searches for the value
 #when the value is found, executes an inorder traversal in order to found the inorder successor of the node
 #then replaces it, afterwards, sets the deleted flag to true    
+
     def delete(value, deleted = false, node = @tree)
         if deleted && node != nil
             if node == nil
@@ -114,6 +88,8 @@ class Tree
         end
     end
 
+#displays the tree in pre-order depth first traversal 
+    
     def preorder(node = @tree, output = [], &block)
         if node == nil
             return nil
@@ -134,6 +110,8 @@ class Tree
         end
         return output
     end
+
+#displays the tree in in-order depth first traversal
     
     def inorder(node = @tree, output = [], &block)
         if node == nil
@@ -156,6 +134,8 @@ class Tree
         return output
     end
     
+#displays the tree in postorder depth-first traversal    
+    
     def postorder(node = @tree, output = [], &block)
         if node == nil
             return nil
@@ -176,6 +156,36 @@ class Tree
         end
         return output
     end
+
+#traverses the tree and returns the node that has the specified value
+
+    def find(value, node = @tree)
+        if node.root == value
+            return "Node: #{node}, Left Subtree: #{node.left_tree}, Right Subtree: #{node.right_tree}, Root Node: #{node.root}"
+        elsif node.root > value
+            self.find(value, node.left_tree)
+        elsif node.root < value
+            self.find(value, node.right_tree)
+        elsif node.left_tree == nil && node.right_tree == nil
+            return "Not found"
+        end
+    end
+
+#The Tree class will have the following methods:
+
+#4. level_order - accepts a block, traverses the tree in breadth-first level order, and yield 
+#each read node to the block. If no block is given, returns an array of values.
+	
+#6. height - accepts a node and returns distance from node to leaf node
+	
+#7. depth - accepts a node and returns distance from node to root node
+	
+#8. balanced? - determines if difference of height of left and right subtrees are at most 1. If 
+#not, it is not balanced.
+	
+#9. rebalance - produces an array by traversing an unbalanced tree, then outputs it to the build-tree 
+#method to make a new balanced binary search tree.
+
 end
 
 class Node
@@ -194,11 +204,12 @@ end
 test_array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 test_tree = Tree.new(test_array)
 puts test_tree
+puts test_tree.find(7)
 #test_block = Proc.new {|value| value > 4}
-puts test_tree.inorder.join(' ')
-test_tree.delete(5)
-print test_tree.inorder
-print test_tree.preorder
+#puts test_tree.inorder.join(' ')
+#test_tree.delete(5)
+#print test_tree.inorder
+#print test_tree.preorder
 
 #test_tree.insert(9)
 #puts ""
