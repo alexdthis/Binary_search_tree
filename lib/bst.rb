@@ -264,6 +264,12 @@ class Tree
         @tree = build_tree(tree_to_rebalance)
         return @tree
     end
+
+    def pretty_print(node = @tree, prefix = '', is_left = true)
+        pretty_print(node.right_tree, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_tree
+        puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.root}"
+        pretty_print(node.left_tree, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_tree
+    end
 end
 
 class Node
@@ -283,6 +289,8 @@ def driver_program(array)
     array.sort!
     test_tree = Tree.new(array)
     puts "Now testing if the search tree is balanced: #{test_tree.balanced?}"
+    puts "Testing pretty print:"
+    test_tree.pretty_print
     puts "Printing out the tree in level order: #{test_tree.level_order.join('-')}"
     puts "Printing out the tree in pre-order: #{test_tree.preorder.join('-')}"
     puts "Printing out the tree in in-order: #{test_tree.inorder.join('-')}"
@@ -296,6 +304,8 @@ def driver_program(array)
     puts "Now rebalancing the tree..."
     test_tree.rebalance
     puts "Is the rebalanced binary tree balanced? #{test_tree.balanced?}"
+    puts "Testing pretty print:"
+    test_tree.pretty_print
     puts "Printing out the new tree in level order: #{test_tree.level_order.join('-')}"
     puts "Printing out the new tree in pre-order: #{test_tree.preorder.join('-')}"
     puts "Printing out the new tree in in-order: #{test_tree.inorder.join('-')}"
